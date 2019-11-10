@@ -112,16 +112,22 @@ if __name__ == "__main__":
     # print("'{}' is playable: {}".format(file_name,playable))
     ##############################
 
-    files = glob.glob("maps/*.txt")
+    files = glob.glob("generate_map_BMC/*.txt")
+    n = 0
+    p = 0
     for file_name in files:
         start_end, room_matrix = pathfinder_compatibility_conversion(file_name)
         # print(start_end)
         # print(np.matrix(room_matrix))
         try:
             playable = is_playable(start_end, room_matrix, print_path=False)
+            n = n + 1
+            if playable:
+                p = p + 1
         except Exception as e:
             print("error: {} in file {}".format(str(e), file_name))
 
         print("'{}' is playable: {}".format(file_name,playable))
+    print(p/n)
     
 
