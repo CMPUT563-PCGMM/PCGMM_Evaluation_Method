@@ -1,27 +1,8 @@
 import numpy as np
 
-def histogram_base_similarity_score(room1: np.ndarray, room2: np.ndarray) -> float:
+from utils import compute_room_histogram, manhattan_distance
 
-    def manhattan_distance(x,y):
-        return sum(abs(a-b) for a,b in zip(x,y))
-    
-    def compute_room_histogram(room):
-        hist = {
-            "F": 0,
-            "B": 0,
-            "M": 0,
-            "P": 0,
-            "O": 0,
-            "I": 0,
-            "S": 0,
-            "-": 0
-        }
-        unique_elements, counts_elements = np.unique(room, return_counts=True)
-        for idx, c in enumerate(unique_elements):
-            if c == "W" or c == "D":
-                continue
-            hist[c] = counts_elements[idx]
-        return hist
+def histogram_base_similarity_score(room1: np.ndarray, room2: np.ndarray) -> float:
 
     score = 0
     # change room1, room2 to histogram
