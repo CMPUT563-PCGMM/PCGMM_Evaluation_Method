@@ -8,16 +8,19 @@ from utils import readMaps, compute_room_list_histogram
 from clustering_data import cluster_data
 from similarity_tile_base import tile_base_similarity_score
 from similarity_histogram_base import histogram_base_similarity_score
+from similarity_markov_base import markov_base_similarity_score
 
 ####### CONFIG ############
 # location for room folder
-ROOMS_DIR = "./maps"
+# ROOMS_DIR = "./maps"
 # ROOMS_DIR = "./generate_map_BMC"
+ROOMS_DIR = "./generate_map_RM"
 # ROOMS_DIR = "./simple_maps"
 
 # function for compute similarity score
 # similarity_score_fn = tile_base_similarity_score
-similarity_score_fn = histogram_base_similarity_score
+# similarity_score_fn = histogram_base_similarity_score
+similarity_score_fn = markov_base_similarity_score
 
 # flag if use cluster
 ENABLE_CLUSTER = True
@@ -29,7 +32,6 @@ def total_avg_score(room_list):
     total_score = 0
     for room1, room2 in comb:
         score = similarity_score_fn(room1, room2)
-        # break
         total_score = total_score + score
 
     return total_score / len(comb)
