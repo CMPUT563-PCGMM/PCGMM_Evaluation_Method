@@ -1,14 +1,29 @@
+# tileTypes = {
+#     "F": "FLOOR",
+#     "B": "BLOCK",
+#     "M": "MONSTER",
+#     "P": "ELEMENT (LAVA, WATER)",
+#     "O": "ELEMENT + FLOOR (LAVA/BLOCK, WATER/BLOCK)",
+#     "I": "ELEMENT + BLOCK",
+#     "D": "DOOR",
+#     "S": "STAIR",
+#     "W": "WALL",
+#     "-": "VOID"
+# }
 tileTypes = {
     "F": "FLOOR",
     "B": "BLOCK",
     "M": "MONSTER",
     "P": "ELEMENT (LAVA, WATER)",
-    "O": "ELEMENT + FLOOR (LAVA/BLOCK, WATER/BLOCK)",
-    "I": "ELEMENT + BLOCK",
     "D": "DOOR",
     "S": "STAIR",
     "W": "WALL",
-    "-": "VOID"
+    "-": "VOID",
+    "A": "BREAKABLE WALL",
+    "C": "MOVABLE BLOCK",
+    "N": "TODO",
+    "E": "TODO",
+    "U": "TODO"
 }
 
 # location for training data
