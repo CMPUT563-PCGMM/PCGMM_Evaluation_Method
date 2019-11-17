@@ -27,7 +27,8 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-from constant import tileTypes
+from PCGMM_Evaluation_Method.constant import tileTypes
+
 
 
 # WALKABLE = ["F", "M", "O"]
@@ -330,6 +331,50 @@ def is_connect_to_WALKABLE(list_loc, room):
 
     return True
 
+def evaluate_playability(evaluate_data):
+    unplayable_room= []
+    playability = 0.0
+    n = 0
+    p = 0
+    for i in range(evaluate_data.shape[0]):
+        room = evaluate_data[i, :, :]
+        
+        # print(np.where(room == "P")[0].shape[0])
+        # print(room[np.where(np.isin(room, BRIDGEABLE))].shape[0])
+        if room[np.where(np.isin(room, BRIDGEABLE))].shape[0] > 0:
+            has_bridge_block = True
+        else:
+            has_bridge_block = False
+
+        # replace DOOR_REPLACABLE tile to door
+        room[np.where(np.isin(room, DOOR_REPLACEABLE))] = "D"
+        # print(room)
+
+        try:
+            start_end, room_matrix = pathfinder_compatibility_conversion(room)
+            # print(room_matrix)
+            start_end = select_real_start_end(start_end, room_matrix)
+        except Exception as e:
+            print("!"*10)
+            print(e)
+            print("room is not valid, idx={}".format(i))
+            print(room)
+            print("!"*10)
+
+        playable = final_playable(start_end, room, room_matrix, has_bridge_block)
+        # print(has_bridge_block)
+        # print(playable)
+
+        n = n + 1
+        if playable:
+            p = p + 1
+        else:
+            unplayable_room.append(room)
+
+    playability = p / n
+    
+    return (unplayable_room, playability)
+
 if __name__ == "__main__":
     """
         Question:
@@ -338,68 +383,68 @@ if __name__ == "__main__":
     """
 
     ####### TEST SECTION ########
-    # file_name = 'tloz8_2_room_29.txt'
-    # file_name = 'tloz5_1_room_13.txt'
-    file_name = 'map_data/map_reduced_OI/tloz8_2_room_14.txt'
-    # file_name = 'tloz8_2_room_7.txt'
-    # file_name = 'unplayable_tloz9_2_room_6.txt'
-    # file_name = 'maps/tloz6_1_room_16.txt'
+    # # file_name = 'tloz8_2_room_29.txt'
+    # # file_name = 'tloz5_1_room_13.txt'
+    # file_name = 'map_data/map_reduced_OI/tloz8_2_room_14.txt'
+    # # file_name = 'tloz8_2_room_7.txt'
+    # # file_name = 'unplayable_tloz9_2_room_6.txt'
+    # # file_name = 'maps/tloz6_1_room_16.txt'
 
-    room, has_bridge_block = read_file(file_name)
-    start_end, room_matrix = pathfinder_compatibility_conversion(room)
-    print("start:", start_end)
-    start_end = select_real_start_end(start_end, room_matrix)
-    print("after select: ", start_end)
-    # print(np.matrix(room_matrix))
-    print(room)
+    # room, has_bridge_block = read_file(file_name)
+    # start_end, room_matrix = pathfinder_compatibility_conversion(room)
+    # print("start:", start_end)
+    # start_end = select_real_start_end(start_end, room_matrix)
+    # print("after select: ", start_end)
+    # # print(np.matrix(room_matrix))
+    # print(room)
     
-    playable = final_playable(start_end, room, room_matrix, has_bridge_block)
-    print("'{}' is playable: {}".format(file_name,playable))
-
-    '''
-    # try:
-    #     playable = is_playable(start_end, room_matrix, print_path=False)
-    # except:
-    #     print("{} is not right".format(file_name))
+    # playable = final_playable(start_end, room, room_matrix, has_bridge_block)
     # print("'{}' is playable: {}".format(file_name,playable))
-    '''
+
+    # '''
+    # # try:
+    # #     playable = is_playable(start_end, room_matrix, print_path=False)
+    # # except:
+    # #     print("{} is not right".format(file_name))
+    # # print("'{}' is playable: {}".format(file_name,playable))
+    # '''
     ##############################
 
-    # # files = glob.glob("generate_map_BMC/*.txt")
-    # # files = glob.glob("maps/*.txt")
-    # files = glob.glob("map_data/map_reduced_OI/*.txt")
-    # # files = glob.glob("generate_map_RM/*.txt")
-    # n = 0
-    # p = 0
-    # for file_name in files:
-    #     # print(file_name)
-    #     # print(n)
-    #     try:
-    #         room, has_bridge_block = read_file(file_name)
-    #         # start_end, room_matrix = pathfinder_compatibility_conversion(file_name)
-    #         start_end, room_matrix = pathfinder_compatibility_conversion(room)
-    #         start_end = select_real_start_end(start_end, room_matrix)
-    #     except Exception as e:
-    #         print(file_name)
-    #         print(e)
-    #         break
+    # files = glob.glob("map_data/map_reduced_OI/*.txt") # 0.9651
+    # files = glob.glob("generate_map/generate_map_BMC_2/*.txt") #0.8025
+    files = glob.glob("generate_map/generate_map_RM_2/*.txt")
+    
+    n = 0
+    p = 0
+    for file_name in files:
+        # print(file_name)
+        # print(n)
+        try:
+            room, has_bridge_block = read_file(file_name)
+            # start_end, room_matrix = pathfinder_compatibility_conversion(file_name)
+            start_end, room_matrix = pathfinder_compatibility_conversion(room)
+            start_end = select_real_start_end(start_end, room_matrix)
+        except Exception as e:
+            print(file_name)
+            print(e)
+            break
 
-    #     # print(start_end)
-    #     # print(np.matrix(room_matrix))
-    #     # try:
-    #     # playable = is_playable(start_end, room_matrix, print_path=False)
-    #     playable = final_playable(start_end, room, room_matrix, has_bridge_block)
-    #     n = n + 1
-    #     if playable:
-    #         p = p + 1
-    #     # except Exception as e:
-    #     #     print("error: {} in file {}".format(str(e), file_name))
+        # print(start_end)
+        # print(np.matrix(room_matrix))
+        # try:
+        # playable = is_playable(start_end, room_matrix, print_path=False)
+        playable = final_playable(start_end, room, room_matrix, has_bridge_block)
+        n = n + 1
+        if playable:
+            p = p + 1
+        # except Exception as e:
+        #     print("error: {} in file {}".format(str(e), file_name))
 
-    #     # print("'{}' is playable: {}".format(file_name,playable))
-    #     if not playable:
-    #         print(file_name)
-    # print(p)
-    # print(n)
-    # print(p/n)
+        # print("'{}' is playable: {}".format(file_name,playable))
+        if not playable:
+            print(file_name)
+    print(p)
+    print(n)
+    print(p/n)
     
 

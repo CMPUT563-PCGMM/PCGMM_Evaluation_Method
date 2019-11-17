@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils import compute_room_histogram, manhattan_distance
+from PCGMM_Evaluation_Method.utils import compute_room_histogram, manhattan_distance
 
 def histogram_base_similarity_score(room1: np.ndarray, room2: np.ndarray) -> float:
 

@@ -2,7 +2,6 @@ import glob
 
 import numpy as np
 from typing import Dict
-# from constant import tileTypes
 
 def readMaps(tileTypes: Dict[str, str], maps_path: str):
     maps_lst = []
@@ -39,15 +38,16 @@ def compute_room_histogram(room: np.ndarray) -> Dict[str, int]:
         "B": 0,
         "M": 0,
         "P": 0,
-        "O": 0,
-        "I": 0,
         "S": 0,
-        "-": 0
+        "-": 0,
+        "C": 0
     }
+
+    ignore = ["D", "W", "A", "N", "E", "U"]
     
     unique_elements, counts_elements = np.unique(room, return_counts=True)
     for idx, c in enumerate(unique_elements):
-        if c == "W" or c == "D":
+        if c in ignore:
             continue
         hist[c] = counts_elements[idx]
     return hist
